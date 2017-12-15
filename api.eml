@@ -1,0 +1,883 @@
+swagger: '2.0'
+info:
+  description: |
+    This is a sample Petstore server.  You can find 
+    out more about Swagger at 
+    [http://swagger.io](http://swagger.io) or on 
+    [irc.freenode.net, #swagger](http://swagger.io/irc/).
+  version: "2017-12-14"
+  title: Swagger Petstore
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+# host: petstore.swagger.io
+# basePath: /v2
+tags:
+- name: pet
+  description: Everything about your Pets
+  externalDocs:
+    description: Find out more
+    url: http://swagger.io
+- name: store
+  description: Access to Petstore orders
+- name: user
+  description: Operations about user
+  externalDocs:
+    description: Find out more about our store
+    url: http://swagger.io
+# schemes:
+# - http
+paths:
+  /admin/addons:
+    post:
+      tags:
+      - admin
+      summary: To create addons
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: Pet object that needs to be added to the store
+        required: true
+        schema:
+          $ref: '#/definitions/Pet'
+      responses:
+        405:
+          description: Invalid input
+    put:
+      tags:
+      - admin
+      summary: Update Addons (Global/Not filter)
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: body
+        description: Pet object that needs to be added to the store
+        required: true
+        schema:
+          $ref: '#/definitions/Pet'
+      responses:
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Pet not found
+        405:
+          description: Validation exception
+    get:
+      tags:
+      - admin
+      summary: Get List Addons (Global/Not Filter)
+      description: Multiple status values can be provided with comma separated strings
+      produces:
+      - application/json
+      parameters:
+      - name: status
+        in: query
+        description: Status values that need to be considered for filter
+        required: true
+        type: array
+        items:
+          type: string
+          enum:
+          - available
+          - pending
+          - sold
+          default: available
+        collectionFormat: multi
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Pet'
+        400:
+          description: Invalid status value
+  /admin/addons/{addon_id}:
+    get:
+      tags:
+      - admin
+      summary: Find pet by ID
+      description: Returns a single pet
+      produces:
+      - application/json
+      parameters:
+      - name: addon_id
+        in: path
+        description: ID of pet to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/Pet"
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Pet not found
+  /user/addons/{organization_id}:
+    get:
+      tags:
+      - User Interface
+      summary: to get addons list base on organization
+      description: Multiple status values can be provided with comma separated strings
+      produces:
+      - application/json
+      parameters:
+      - name: organization_id
+        in: path
+        description: Status values that need to be considered for filter
+        required: true
+        type: string
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid status value
+  /user/addons/{organization_id}/id/{addon_id}:
+    get:
+      tags:
+      - User Interface
+      summary: to get detail addons base on organization 
+      description: Returns a single pet
+      produces:
+      - application/json
+      parameters:
+      - name: organization_id
+        in: path
+        description: ID of pet to return
+        required: true
+        type: integer
+        format: int64
+      - name: addon_id
+        in: path
+        description: ID of pet to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/Pet"
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Pet not found
+    post:
+      tags:
+      - User Interface
+      summary: subscribe / Install to organization
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: organization_id
+        description: Pet object that needs to be added to the store
+        required: true
+        type: string
+      - in: path
+        name: addon_id
+        description: Pet object that needs to be added to the store
+        required: true
+        type: string
+      responses:
+        405:
+          description: Invalid input
+    put:
+      tags:
+      - ser Interface
+      summary: update / uninstall to organization
+      operationId: updatePet
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: path
+        name: organization_id
+        description: Pet object that needs to be added to the store
+        required: true
+        type: string
+      - in: path
+        name: addon_id
+        description: Pet object that needs to be added to the store
+        required: true
+        type: string
+      responses:
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Pet not found
+        405:
+          description: Validation exception
+  /approvals/{group_id}:
+    get:
+      tags:
+      - Approval
+      summary: to get approval workflow Role
+      description: "Returns a single pet"
+      operationId: "getPetById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: group_id
+        in: "path"
+        description: "ID of pet to return"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Pet"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Pet not found"
+    post:
+      tags:
+      - Approval
+      summary: to create approval workflow Role
+      operationId: addPet
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: group_id
+        description: Pet object that needs to be added to the store
+        required: true
+        schema:
+          $ref: '#/definitions/Pet'
+      responses:
+        405:
+          description: Invalid input
+  /approvals/{group_id}/flow/{purchase_request_id}:
+    get:
+      tags:
+        - Approval
+      summary: to get Approval Workflow by Purchase Request
+      description: "Returns a single pet"
+      produces:
+        - application/json
+      parameters:
+        - name: group_id 
+          in: path
+          description: ID of pet to return
+          required: true
+          type: integer
+          format: int64
+        - name: purchase_request_id
+          in: path
+          description: ID of pet to return
+          required: true
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Pet not found"
+    post:
+      tags:
+      - Approval
+      summary: to run Approval Workflow by Purchase Request
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: group_id
+        in: path
+        type: string
+        description: Pet object that needs to be added to the store
+        required: true
+      - name: purchase_request_id
+        in: path
+        type: string
+        description: Pet object that needs to be added to the store
+        required: true
+      responses:
+        405:
+          description: Invalid input
+    put:
+      tags:
+      - Approval
+      summary: to update (approve/reject) Approval Purchase Request
+      description: This can only be done by the logged in user.
+      operationId: updateUser
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: group_id
+        in: path
+        description: name that need to be updated
+        required: true
+        type: string
+      - name: purchase_request_id
+        in: path
+        description: Updated user object
+        required: true
+        type : string
+      responses:
+        400:
+          description: Invalid user supplied
+        404:
+          description: User not found
+    delete:
+      tags:
+      - Approval
+      summary: to delete (approve/reject) Approval Purchase Request
+      description: This can only be done by the logged in user.
+      operationId: deleteUser
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: group_id
+        in: path
+        description: The name that needs to be deleted
+        required: true
+        type: string
+      - name: purchase_request_id
+        in: path
+        description: The name that needs to be deleted
+        required: true
+        type: string
+      responses:
+        400:
+          description: Invalid username supplied
+        404:
+          description: User not found
+  /manage/approvals/config:
+    get:
+      tags:
+      - Manage
+      summary: to get Approval config base on organization
+      description: "Returns a single pet"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Pet not found"
+    post:
+      tags:
+      - manage
+      summary: to save approval config base on organization
+      consumes:
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: group_id, purchase_request_id
+        description: Pet object that needs to be added to the store
+        required: true
+        schema:
+          $ref: '#/definitions/Pet'
+      responses:
+        405:
+          description: Invalid input
+  /manage/approvals/{organization_id}:
+    put:
+      tags:
+      - Manage
+      summary: to get Approval config base on organization
+      description: Returns a single pet
+      produces:
+      - application/json
+      parameters:
+      - name: organization_id
+        in: path
+        description: ID of pet to return
+        required: true
+        type: string
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Pet not found
+  /groups:
+    post:
+      tags:
+      - group
+      summary: create group
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        405:
+          description: Invalid input
+    get:
+      tags:
+      - group
+      summary: to get Approval config base on organization
+      description: Returns a single pet
+      produces:
+      - application/json
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Pet not found
+  /groups/{organization_id}/init:
+    post:
+      tags:
+      - group
+      summary: Create Group initial
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: organization_id
+        description: Pet object that needs to be added to the store
+        required: true
+        type: string
+      responses:
+        405:
+          description: Invalid input
+  /groups/{group_id}:
+    get:
+      tags:
+      - group
+      summary: Detail Group
+      description: Returns a single pet
+      produces:
+      - application/json
+      parameters:
+      - name: group_id
+        in: path
+        description: ID of pet to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/Pet"
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Pet not found
+    put:
+      tags:
+      - group
+      summary: update group
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: group_id
+        in: path
+        description: Pet object that needs to be added to the store
+        required: true
+        type: string
+      responses:
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Pet not found
+        405:
+          description: Validation exception
+  /groups/{group_id}/admins:
+    post:
+      tags:
+      - group
+      summary: List Admin Group
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: group_id
+        in: path
+        description: Pet object that needs to be added to the store
+        required: true
+        type: string
+      responses:
+        405:
+          description: Invalid input
+    get:
+      tags:
+      - group
+      summary: Create Admin Group
+      description: Multiple status values can be provided with comma separated strings
+      operationId: findPetsByStatus
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: status
+        in: query
+        description: Status values that need to be considered for filter
+        required: true
+        type: array
+        items:
+          type: string
+          enum:
+          - available
+          - pending
+          - sold
+          default: available
+        collectionFormat: multi
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Pet'
+        400:
+          description: Invalid status value
+  /groups/{group_id}/admins/{admin_id}:
+    delete:
+      tags:
+      - group
+      summary: Delete Admin Group
+      description: This can only be done by the logged in user.
+      produces:
+      - application/json
+      parameters:
+      - name: group_id
+        in: path
+        description: The name that needs to be deleted
+        required: true
+        type: string
+      - name: admin_id
+        in: path
+        description: The name that needs to be deleted
+        required: true
+        type: string
+      responses:
+        400:
+          description: Invalid username supplied
+        404:
+          description: User not found  
+  /groups/{group_id}/addresses:
+    get:
+      tags:
+      - group
+      summary: List address
+      description: "Returns a single pet"
+      produces:
+      - "application/json"
+      parameters:
+      - name: group_id
+        in: path
+        description: "ID of pet to return"
+        required: true
+        type: string
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Pet"
+        400:
+          description: "Invalid ID supplied"
+        404:
+          description: "Pet not found"
+    post:
+      tags:
+      - group
+      summary: Create Address
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: group_id
+        in: path
+        description: Pet object that needs to be added to the store
+        required: true
+        type: string
+      responses:
+        405:
+          description: Invalid input
+  /groups/{group_id}/addresses/{addresses_id}:
+    delete:
+      tags:
+      - group
+      summary: delete Address
+      description: This can only be done by the logged in user.
+      produces:
+      - application/json
+      parameters:
+      - name: group_id
+        in: path
+        description: The name that needs to be deleted
+        required: true
+        type: string
+      - in: path
+        name: addresses_id
+        description: The name that needs to be deleted
+        required: true
+        type: string
+      responses:
+        400:
+          description: Invalid username supplied
+        404:
+          description: User not found
+  /groups/{organization_id}/id/{group_id}/id/addresses/billings:
+    get:
+      tags:
+      - group
+      summary: List billing address
+      description: Returns a single pet
+      produces:
+      - application/json
+      parameters:
+      - name: organization_id
+        in: path
+        description: ID of pet to return
+        required: true
+        type: integer
+        format: int64
+      - name: group_id
+        in: path
+        description: ID of pet to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Pet not found
+  /groups/{organization_id}/id/{group_id}/id/addresses/shipping:
+    get:
+      tags:
+        - group
+      summary: List Shipping Address
+      description: Returns a single pet
+      produces:
+        - application/json
+      parameters:
+        - name: organization_id 
+          in: path
+          description: ID of pet to return
+          required: true
+          type: integer
+          format: int64
+        - name: group_id 
+          in: path
+          description: ID of pet to return
+          required: true
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Pet not found
+  /manage/groups/configs:
+    get:
+      tags:
+      - group
+      summary: to get Group config base on organization
+      description: Returns a single pet
+      produces:
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/Pet"
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Pet not found
+    post:
+      tags:
+      - group
+      summary: to save Group config base on organization
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: Pet object that needs to be added to the store
+        required: true
+        schema:
+          $ref: '#/definitions/Pet'
+      responses:
+        405:
+          description: Invalid input
+definitions:
+  Order:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      petId:
+        type: integer
+        format: int64
+      quantity:
+        type: integer
+        format: int32
+      shipDate:
+        type: string
+        format: date-time
+      status:
+        type: string
+        description: Order Status
+        enum:
+        - placed
+        - approved
+        - delivered
+      complete:
+        type: boolean
+        default: false
+    xml:
+      name: Order
+  Category:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+    xml:
+      name: Category
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      username:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      userStatus:
+        type: integer
+        format: int32
+        description: User Status
+    xml:
+      name: User
+  Tag:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+    xml:
+      name: Tag
+  Pet:
+    type: object
+    required:
+    - name
+    - photoUrls
+    properties:
+      id:
+        type: integer
+        format: int64
+      category:
+        $ref: '#/definitions/Category'
+      name:
+        type: string
+        example: doggie
+      photoUrls:
+        type: array
+        xml:
+          name: photoUrl
+          wrapped: true
+        items:
+          type: string
+      tags:
+        type: array
+        xml:
+          name: tag
+          wrapped: true
+        items:
+          $ref: '#/definitions/Tag'
+      status:
+        type: string
+        description: pet status in the store
+        enum:
+        - available
+        - pending
+        - sold
+    xml:
+      name: Pet
+  ApiResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      type:
+        type: string
+      message:
+        type: string
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+# basePath: /bizzy/bizzy1/1.0.0
+schemes:
+ - https
+ - http
+# Added by API Auto Mocking Plugin
+# basePath: /bizzy/bizzy2/1.0.0
+# Added by API Auto Mocking Plugin
+basePath: /bizzy/bizzy1/1.0.0
